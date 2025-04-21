@@ -1,0 +1,99 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - {{ user.username }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f4f8;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-pic {
+            display: block;
+            margin: 10px auto;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .attendance-table th, .attendance-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        .actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .actions a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ user.username }}!</h1>
+        <div class="info">
+            <p>Email: {{ user.email }}</p>
+            <p>Class: {{ class_info }}</p>
+            {% if image_data %}
+    <img src="data:image/jpeg;base64,{{ image_data }}" alt="Profile Picture" class="profile-pic">
+{% endif %}
+        </div>
+
+        <h2>Attendance Records</h2>
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_records %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ record.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ "Present" if record.present else "Absent" }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3">No attendance records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <a href="{{ url_for('update_image', user_id=user.id) }}">Update Profile Picture</a> |
+            <a href="{{ url_for('index') }}">Logout</a>
+        </div>
+    </div>
+</body>
+</html>
